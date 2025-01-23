@@ -21,7 +21,7 @@ export class Kernel implements IKernel {
       timestamp: Date.now()
     });
 
-    for (const [name, module] of this.modules) {
+    for (const [_, module] of this.modules) {
       if (module.initialize) {
         await module.initialize();
       }
@@ -43,18 +43,13 @@ export class Kernel implements IKernel {
       timestamp: Date.now()
     });
 
-    for (const [name, module] of this.modules) {
+    for (const [_, module] of this.modules) {
       if (module.shutdown) {
         await module.shutdown();
       }
     }
 
     this.status = "idle";
-    await this.emit({
-      type: "kernel:shutdown",
-      payload: null,
-      timestamp: Date.now()
-    });
   }
 
   getStatus(): string {
@@ -70,15 +65,15 @@ export class Kernel implements IKernel {
     });
   }
 
+  async emit(event: IEvent): Promise<void> {
+    await this.eventEmitter.emit(event);
+  }
+
   on(eventType: string, handler: IEventHandler): void {
     this.eventEmitter.on(eventType, handler);
   }
 
   off(eventType: string, handler: IEventHandler): void {
     this.eventEmitter.off(eventType, handler);
-  }
-
-  private async emit(event: IEvent): Promise<void> {
-    await this.eventEmitter.emit(event);
   }
 }

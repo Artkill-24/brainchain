@@ -5,11 +5,11 @@ export interface IEvent {
 }
 
 export interface IEventHandler {
-  (event: IEvent): void | Promise<void>;
+  (event: IEvent): void;
 }
 
 export interface IEventEmitter {
-  emit(event: IEvent): void | Promise<void>;
+  emit(event: IEvent): Promise<void>;
   on(eventType: string, handler: IEventHandler): void;
   off(eventType: string, handler: IEventHandler): void;
 }
